@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Threading;
+using System.Web.Script.Services;
 using System.Web.Services;
+using System.Web.Services.Protocols;
 
 namespace ProteinTrackerWebServices
 {
@@ -12,15 +13,34 @@ namespace ProteinTrackerWebServices
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
+    [ScriptService]
     // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
     // [System.Web.Script.Services.ScriptService]
     public class ProteinTrackerWebService : WebService
     {
+        /*public class AuthenticationHeader : SoapHeader
+        {
+            public string UserName;
+            public string Password;
+        }
+
+        public AuthenticationHeader Authentication;
+        */
         private UserRepository repository = new UserRepository();
 
         [WebMethod(Description ="Increments total.", EnableSession =true)]
+        [SoapHeader("Authentication")]
         public int AddProtein(int amount, int userID)
         {
+            /*if (Authentication == null ||
+             *    Authentication.UserName != "Bob" ||
+             *    Authentication.Password != pass)
+            {
+                throw new Exception("Bad credentials.");
+            }*/
+
+            Thread.Sleep(3000);
+
             var user = repository.GetByUserID(userID);
 
             if (user == null)
@@ -41,7 +61,7 @@ namespace ProteinTrackerWebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public List<User> UsersList()
+        public List<User> ListUsers()
         {
             return new List<User>(repository.GetAllUsers());
         }
